@@ -51,16 +51,23 @@ const findPersonById = (personId, done) => {
   });
 };
 
-const findEditThenSave = (personId, done) => {
+const findEditThenSave = async (personId, done) => {
   const foodToAdd = "hamburger";
-
-  done(null /*, data*/);
+  let person = await Person.findById(personId);
+  person.favoriteFoods.push(foodToAdd);
+  person.save((error, data) => {
+    if (error) return done(error);
+    return done(null, data);
+  });
 };
 
 const findAndUpdate = (personName, done) => {
   const ageToSet = 20;
 
-  done(null /*, data*/);
+  Person.findOneAndUpdate({name: personName}, {age: ageToSet}, { new: true }, (error, data) => {
+    if (error) return done(error);
+    return done(null, data);
+  })
 };
 
 const removeById = (personId, done) => {
